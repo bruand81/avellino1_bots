@@ -22,3 +22,4 @@ six==1.15.0
 sqlparse==0.4.1
 urllib3==1.26.2
 xlrd==2.0.1
+gunicorn

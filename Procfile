@@ -1,0 +1,1 @@
+web: gunicorn avellino1_bots.wsgi
