@@ -42,6 +42,12 @@ def get_iscritto_by_telegram(t_user: str) -> QuerySet:
     )
 
 
+def get_iscritto_by_authcode(authcode: str) -> QuerySet:
+    return Iscritti.objects.filter(
+        Q(authcode__iexact=authcode)
+    )
+
+
 def parse_none_string(string: any) -> str:
     return "-" if string is None else string
 
@@ -106,6 +112,32 @@ class CocaBotView(View):
 
         self.send_message(f'Mi dispice, ma non so cosa significa "{t_message["text"]}", la mia intelligenza è limitata. Usa /help per vedere cosa so fare!',
                           t_chat["id"])
+        return JsonResponse({"ok": "POST request processed"})
+
+    def registrami(self, s: list, t_user: str, t_chat: dict) -> JsonResponse:
+        if len(s) < 2:
+            self.send_message("Non mi hai dato il codice di autorizzazione. Richiedilo ai tuoi capigruppo!", t_chat["id"])
+            return JsonResponse({"ok": "POST request processed"})
+        nuovo_iscritto_set = get_iscritto_by_telegram(t_user)
+        if nuovo_iscritto_set.count() != 1:
+            self.send_message("Il codice di autorizzaiozne inviato non è valido!", t_chat["id"])
+            return JsonResponse({"ok": "POST request processed"})
+
+        iscritto_set = get_iscritto_by_telegram(t_user)
+        if iscritto_set.count() > 0:
+            iscritto = iscritto_set[0]
+            self.send_message(f'Questo nick telegram è già registrato per {iscritto.nome} {iscritto.cognome}', t_chat["id"])
+            return JsonResponse({"ok": "POST request processed"})
+
+        nuovo_iscritto = nuovo_iscritto_set[0]
+        if nuovo_iscritto.telegram is None:
+            nuovo_iscritto.telegram = t_user
+            nuovo_iscritto.save(force_update=True)
+            self.send_message(f'Complimenti, questo nich è stato registrato per {nuovo_iscritto.nome} {nuovo_iscritto.cognome}',
+                              t_chat["id"])
+            return JsonResponse({"ok": "POST request processed"})
+
+        self.send_message(f'{nuovo_iscritto.nome} {nuovo_iscritto.cognome} ha già un account telegram associato', t_chat["id"])
         return JsonResponse({"ok": "POST request processed"})
 
     def get_codice(self, s, t_user, t_chat):
