@@ -101,7 +101,10 @@ class CocaBotView(View):
         if s[0] == 'aggiorna':
             return self.aggiorna_lista(s, t_user, t_chat)
 
-        self.send_message(f'Mi dispice, ma non so cosa significa "{t_message["text"]}", la mia intelligenza è limitata',
+        if s[0] == 'help':
+            return self.help(s, t_chat)
+
+        self.send_message(f'Mi dispice, ma non so cosa significa "{t_message["text"]}", la mia intelligenza è limitata. Usa /help per vedere cosa so fare!',
                           t_chat["id"])
         return JsonResponse({"ok": "POST request processed"})
 
@@ -339,7 +342,7 @@ class CocaBotView(View):
                 message = f'Ciao {iscritto.nome} {iscritto.cognome},\n' \
                           f'Per accedere al bot devi essere autenticat{self.get_gendered_string(iscritto.sesso, "o", "a")}.\n' \
                           f'Il tuo codice autorizzazione e\' {iscritto.authcode}' \
-                          f'Accedi al bot con telegram t.me/AV1CoCaBot e digita il comando /autorizzami {iscritto.authcode}.\n' \
+                          f'Accedi al bot con telegram t.me/AV1CoCaBot e digita il comando /registrami {iscritto.authcode}.\n' \
                           f'Fraternamente,\n' \
                           f'Il tuo amico bot di quartiere'
                 message_html = f'<p>Ciao {iscritto.nome} {iscritto.cognome},</p>' \
@@ -354,6 +357,22 @@ class CocaBotView(View):
                 self.send_message('Email inviata!', chat_id)
                 return JsonResponse({"ok": "POST request processed"})
         self.send_message('Non ti ho trovato nell\'elenco, chiedi aiuto ai capigruppo!', chat_id)
+        return JsonResponse({"ok": "POST request processed"})
+
+    def help(self, chat_id: int) -> JsonResponse:
+        help_text = ''
+        help_text += '/info - Ottiene le info di un socio del gruppo, si può cercare per cognome, nome, codice socio, codice fiscale o unità [L/C, E/G, R/S, Adulti]\n'
+        help_text += '/codicesocio - Ottiene il codice socio di un socio del gruppo, si può cercare per cognome, nome, codice socio, codice fiscale o unità [L/C, E/G, R/S, Adulti]\n'
+        help_text += '/generacodice - Genera il codice di autorizzazione per potersi abilitare all\'uso del bot\n'
+        help_text += '/inviacodice - Invia il di autorizzazione per potersi abilitare all\'uso del bot all\'indirizzo email registrato su Buonastrada, si può cercare per codice socio, codice fiscale\n'
+        help_text += '/registrami - Registra l\'account telegram al bot. Richiede codice di autorizzazione\n'
+        help_text += '/aggiungiadmin - Aggiunge un amministratore del bot. Solo per amministratori\n'
+        help_text += '/aggiungicapo - Aggiunge un un capo del gruppo. Solo per amministratori\n'
+        help_text += '/rimuoviadmin - Rimuove un amministratore del bot. Solo per amministratori\n'
+        help_text += '/rimuovicapo - Rimuove un un capo del gruppo. Solo per amministratori\n'
+        help_text += '/aggiorna - Aggiorna la lista soci dal file excel su onedrive. Solo per amministratori\n'
+        help_text += '/help - Mostra questa guida ai comandi\n'
+        self.send_message(help_text, chat_id)
         return JsonResponse({"ok": "POST request processed"})
 
     def get_gendered_string(self, sesso: str, maschile: str, femminile: str) -> str:
