@@ -316,8 +316,8 @@ class CocaBotView(View):
                 self.send_message(f'{iscritto.nome} {iscritto.cognome} è stato aggiunto in Co.Ca.!', t_chat["id"])
                 return JsonResponse({"ok": "POST request processed"})
 
-            self.send_message(f'{iscritto.nome} {iscritto.cognome} è già in Co.Ca.!', t_chat["id"])
-            return JsonResponse({"ok": "POST request processed"})
+            # self.send_message(f'{iscritto.nome} {iscritto.cognome} è già in Co.Ca.!', t_chat["id"])
+            # return JsonResponse({"ok": "POST request processed"})
 
         return JsonResponse({"ok": "POST request processed"})
 
@@ -403,7 +403,7 @@ class CocaBotView(View):
                 message_html = f'<p>Ciao {iscritto.nome} {iscritto.cognome},</p>' \
                                f'<p>Per accedere al bot devi essere autenticat{self.get_gendered_string(iscritto.sesso, "o", "a")}.<br/>' \
                                f'Il tuo codice autorizzazione &egrave; <strong>{iscritto.authcode}</strong></p>' \
-                               f'<p>Accedi al bot con telegram <a href="https://t.me/AV1CoCaBot">https://t.me/AV1CoCaBot</a> e digita il comando /autorizzami {iscritto.authcode}.</p>' \
+                               f'<p>Accedi al bot con telegram <a href="https://t.me/AV1CoCaBot">https://t.me/AV1CoCaBot</a> e digita il comando /registrami {iscritto.authcode}.</p>' \
                                f'<p>Fraternamente,<br/>' \
                                f'Il tuo amico bot di quartiere</p>'
                 email_from = settings.EMAIL_FROM
