@@ -118,6 +118,9 @@ class CocaBotView(View):
         if s[0] == 'registrami':
             return self.registrami(s, t_user, t_chat)
 
+        if s[0] == 'autorizzami':
+            return self.registrami(s, t_user, t_chat)
+
         self.send_message(f'Mi dispice, ma non so cosa significa "{t_message["text"]}", la mia intelligenza è limitata. Usa /help per vedere cosa so fare!',
                           t_chat["id"])
         return JsonResponse({"ok": "POST request processed"})
