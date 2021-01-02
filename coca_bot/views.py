@@ -121,8 +121,18 @@ class CocaBotView(View):
         if s[0] == 'autorizzami':
             return self.registrami(s, t_user, t_chat)
 
+        if s[0] == 'clearlog':
+            return self.clear_log(s, t_user, t_chat)
+
         self.send_message(f'Mi dispice, ma non so cosa significa "{t_message["text"]}", la mia intelligenza è limitata. Usa /help per vedere cosa so fare!',
                           t_chat["id"])
+        return JsonResponse({"ok": "POST request processed"})
+
+    def clear_log(self, s: list, t_user: str, t_chat: dict) -> JsonResponse:
+        if self.check_super_admin(t_user, t_chat["id"]):
+            AppLogs.objects.all().delete()
+            self.send_message("Fatto!", t_chat["id"])
+            return JsonResponse({"ok": "POST request processed"})
         return JsonResponse({"ok": "POST request processed"})
 
     def registrami(self, s: list, t_user: str, t_chat: dict) -> JsonResponse:
@@ -242,7 +252,8 @@ class CocaBotView(View):
                 )
 
             for iscritto in iscritti:
-                iscritto.authcode = secrets.token_urlsafe(6)
+                authcode = secrets.token_urlsafe(6).replace('_', 't').replace('-', 'P')
+                iscritto.authcode = authcode
                 iscritto.save(force_update=True)
                 self.send_message(f'Authcode per {iscritto.nome} {iscritto.cognome}: ***{iscritto.authcode}***',
                                   t_chat["id"])
