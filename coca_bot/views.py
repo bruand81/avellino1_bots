@@ -78,6 +78,11 @@ class CocaBotView(View):
         text = text.lstrip("/")
         s = split(text, posix=True)
 
+        if s[0] == 'start':
+            self.send_message("Benvenuto sul bor della Comunità Capi AGESCI Avellino 1\n"
+                              "Se sei un capo di questa Comunità Capi usa il codice ricevuto per email per registrarti!", t_chat["id"])
+            return JsonResponse({"ok": "POST request processed"})
+
         if s[0] == 'info':
             return self.get_info(s, t_user, t_chat)
 
