@@ -1,1 +1,1 @@
-web: gunicorn avellino1_bots.wsgi
+web: gunicorn avellino1_bots.wsgi --log-file -
