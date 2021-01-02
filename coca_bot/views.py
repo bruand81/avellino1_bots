@@ -520,7 +520,7 @@ class CocaBotView(View):
         response = requests.post(
             f"{TELEGRAM_URL}{TUTORIAL_BOT_TOKEN}/sendMessage", data=data
         )
-        print(data)
-        print(response.status_code)
-        print(response.reason)
-        print(response.content)
+        # print(data)
+        # print(response.status_code)
+        # print(response.reason)
+        # print(response.content)
