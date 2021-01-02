@@ -157,7 +157,7 @@ class CocaBotView(View):
                 iscritto_text = f'***Codice Socio:*** {iscritto.codice_socio}\n' \
                                 f'***Nome:*** {iscritto.nome} {iscritto.cognome}\n' \
                                 f'***Branca:*** {iscritto.branca}\n' \
-                                f'________________________________________\n'
+                                f'--------------------------------------\n'
                 message_text += iscritto_text
 
             if message_text == '':
@@ -175,8 +175,10 @@ class CocaBotView(View):
             iscritti_set = get_iscritti(s[1])
 
             message_text = ''
+
             for iscritto in iscritti_set:
-                iscritto_text = f'***Codice Socio:*** {iscritto.codice_socio}\n' \
+                iscritto_text = ''
+                iscritto_text += f'***Codice Socio:*** {iscritto.codice_socio}\n' \
                                 f'***Codice Fiscale:*** {iscritto.codice_fiscale}\n' \
                                 f'***Nome:*** {iscritto.nome} {iscritto.cognome}\n' \
                                 f'***Sesso:*** {iscritto.sesso}\n' \
@@ -192,7 +194,8 @@ class CocaBotView(View):
                     iscritto_text += f'***Telegram:*** {"" if iscritto.telegram is None else "@"}{parse_none_string(iscritto.telegram)}\n'
                     iscritto_text += f'***AuthCode:*** {parse_none_string(iscritto.authcode)}\n'
                     iscritto_text += f'***Attivo:*** {"Si" if iscritto.active else "No"}\n'
-                message_text += iscritto_text + f'--------------------------------------\n'
+                message_text += iscritto_text
+                message_text += f'--------------------------------------\n'
 
             if message_text == '':
                 message_text = 'Nessun iscritto con i criteri di ricerca specificati'
