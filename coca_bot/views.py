@@ -174,7 +174,10 @@ class CocaBotView(View):
 
             iscritti_set = get_iscritti(s[1])
 
-            message_text = ''
+            # message_text = ''
+            if iscritti_set.count() < 1:
+                message_text = 'Nessun iscritto con i criteri di ricerca specificati'
+                self.send_message(message_text, t_chat["id"])
 
             for iscritto in iscritti_set:
                 iscritto_text = ''
@@ -194,13 +197,19 @@ class CocaBotView(View):
                     iscritto_text += f'***Telegram:*** {"" if iscritto.telegram is None else "@"}{parse_none_string(iscritto.telegram)}\n'
                     iscritto_text += f'***AuthCode:*** {parse_none_string(iscritto.authcode)}\n'
                     iscritto_text += f'***Attivo:*** {"Si" if iscritto.active else "No"}\n'
-                message_text += iscritto_text
-                message_text += f'--------------------------------------\n'
 
-            if message_text == '':
-                message_text = 'Nessun iscritto con i criteri di ricerca specificati'
+                iscritto_text += f'--------------------------------------'
+                self.send_message(iscritto_text, t_chat["id"])
+                # print(iscritto_text)
+                # message_text += iscritto_text
+                # print(message_text)
+                # message_text += f'--------------------------------------\n'
 
-            self.send_message(message_text, t_chat["id"])
+            # if message_text == '':
+            #     message_text = 'Nessun iscritto con i criteri di ricerca specificati'
+
+
+            # self.send_message(message_text, t_chat["id"])
             # print(f'Messaggio inviato: {message_text}')
         return JsonResponse({"ok": "POST request processed"})
 
