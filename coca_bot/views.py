@@ -180,6 +180,7 @@ class CocaBotView(View):
                 self.send_message(message_text, t_chat["id"])
 
             for iscritto in iscritti_set:
+                print(f'***Nome:*** {iscritto.nome} {iscritto.cognome}')
                 iscritto_text = ''
                 iscritto_text += f'***Codice Socio:*** {iscritto.codice_socio}\n' \
                                 f'***Codice Fiscale:*** {iscritto.codice_fiscale}\n' \
@@ -192,15 +193,17 @@ class CocaBotView(View):
                                 f'***Cellulare:*** {parse_none_string(iscritto.cellulare)}\n' \
                                 f'***Email:*** {parse_none_string(iscritto.email)}\n' \
                                 f'***Fo.Ca.:*** {iscritto.livello_foca}\n'
+                print(iscritto_text)
                 if self.check_admin(t_user, t_chat['id'], False):
                     iscritto_text += f'***Ruolo:*** {iscritto.get_role_display()}\n'
                     iscritto_text += f'***Telegram:*** {"" if iscritto.telegram is None else "@"}{parse_none_string(iscritto.telegram)}\n'
                     iscritto_text += f'***AuthCode:*** {parse_none_string(iscritto.authcode)}\n'
                     iscritto_text += f'***Attivo:*** {"Si" if iscritto.active else "No"}\n'
 
+                print(iscritto_text)
                 iscritto_text += f'--------------------------------------'
                 self.send_message(iscritto_text, t_chat["id"])
-                # print(iscritto_text)
+                print(iscritto_text)
                 # message_text += iscritto_text
                 # print(message_text)
                 # message_text += f'--------------------------------------\n'
