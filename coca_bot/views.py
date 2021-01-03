@@ -122,6 +122,7 @@ def print_mail_field(email:str) -> str:
 
 class CocaBotView(View):
     def post(self, request, *args, **kwargs):
+        return JsonResponse({"ok": "POST request processed"})
         t_data = json.loads(request.body)
         t_message = t_data["message"]
         t_chat = t_message["chat"]
@@ -135,6 +136,7 @@ class CocaBotView(View):
             text = t_message["text"].strip().lower()
         except Exception as e:
             return JsonResponse({"ok": "POST request processed"})
+        printdebug(text)
 
         applog = AppLogs(
             username=t_user,
