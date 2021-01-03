@@ -124,7 +124,6 @@ class CocaBotView(View):
         )
 
         applog.save()
-        printdebug("log_saved")
 
         text = text.lstrip("/")
         s = split(text, posix=True)
@@ -258,30 +257,34 @@ class CocaBotView(View):
                 message_text = 'Nessun iscritto con i criteri di ricerca specificati'
                 send_message(message_text, t_chat["id"])
 
-            for iscritto in iscritti_set:
-                # print(f'*Nome:* {iscritto.nome} {iscritto.cognome}')
-                iscritto_text = ''
-                iscritto_text += f'*Codice Socio:* {clean_message(iscritto.codice_socio)}\n' \
-                                f'*Codice Fiscale:* {clean_message(iscritto.codice_fiscale)}\n' \
-                                f'*Nome:* {clean_message(iscritto.nome)} {clean_message(iscritto.cognome)}\n' \
-                                f'*Sesso:* {clean_message(iscritto.sesso)}\n' \
-                                f'*Data e luogo di nascita:* {clean_message(iscritto.data_di_nascita)} - {clean_message(iscritto.comune_di_nascita)}\n' \
-                                f'*Residenza:* {clean_message(iscritto.indirizzo)} {clean_message(iscritto.civico)}, {clean_message(iscritto.cap)} {clean_message(iscritto.comune)} ({clean_message(iscritto.provincia)})\n' \
-                                f'*Privacy:* _2.a_ {"Si" if iscritto.informativa2a else "No"} - _2.b_ {"Si" if iscritto.informativa2b else "No"} - _Immagini_ {"Si" if iscritto.consenso_immagini else "No"}\n' \
-                                f'*Branca:* {clean_message(iscritto.branca)}\n' \
-                                f'*Cellulare:* {clean_message(parse_none_string(iscritto.cellulare))}\n' \
-                                f'*Email:* {clean_message(parse_none_string(iscritto.email))}\n' \
-                                f'*Fo.Ca.:* {clean_message(iscritto.livello_foca)}\n'
-                # print(iscritto_text)
-                if self.check_admin(t_user, t_chat['id'], False):
-                    iscritto_text += f'*Ruolo:* {clean_message(iscritto.get_role_display())}\n'
-                    iscritto_text += f'*Telegram:* {"" if iscritto.telegram is None else "@"}{parse_none_string(iscritto.telegram)}\n'
-                    iscritto_text += f'*AuthCode:* {clean_message(parse_none_string(iscritto.authcode))}\n'
-                    iscritto_text += f'*Attivo:* {"Si" if iscritto.active else "No"}\n'
+            try:
+                for iscritto in iscritti_set:
+                    printdebug(f'*Nome:* {iscritto.nome} {iscritto.cognome}')
+                    iscritto_text = ''
+                    iscritto_text += f'*Codice Socio:* {clean_message(iscritto.codice_socio)}\n' \
+                                    f'*Codice Fiscale:* {clean_message(iscritto.codice_fiscale)}\n' \
+                                    f'*Nome:* {clean_message(iscritto.nome)} {clean_message(iscritto.cognome)}\n' \
+                                    f'*Sesso:* {clean_message(iscritto.sesso)}\n' \
+                                    f'*Data e luogo di nascita:* {clean_message(iscritto.data_di_nascita)} - {clean_message(iscritto.comune_di_nascita)}\n' \
+                                    f'*Residenza:* {clean_message(iscritto.indirizzo)} {clean_message(iscritto.civico)}, {clean_message(iscritto.cap)} {clean_message(iscritto.comune)} ({clean_message(iscritto.provincia)})\n' \
+                                    f'*Privacy:* _2.a_ {"Si" if iscritto.informativa2a else "No"} - _2.b_ {"Si" if iscritto.informativa2b else "No"} - _Immagini_ {"Si" if iscritto.consenso_immagini else "No"}\n' \
+                                    f'*Branca:* {clean_message(iscritto.branca)}\n' \
+                                    f'*Cellulare:* {clean_message(parse_none_string(iscritto.cellulare))}\n' \
+                                    f'*Email:* {clean_message(parse_none_string(iscritto.email))}\n' \
+                                    f'*Fo.Ca.:* {clean_message(iscritto.livello_foca)}\n'
+                    # print(iscritto_text)
+                    if self.check_admin(t_user, t_chat['id'], False):
+                        iscritto_text += f'*Ruolo:* {clean_message(iscritto.get_role_display())}\n'
+                        iscritto_text += f'*Telegram:* {"" if iscritto.telegram is None else "@"}{parse_none_string(iscritto.telegram)}\n'
+                        iscritto_text += f'*AuthCode:* {clean_message(parse_none_string(iscritto.authcode))}\n'
+                        iscritto_text += f'*Attivo:* {"Si" if iscritto.active else "No"}\n'
 
-                # print(iscritto_text)
-                iscritto_text += f'--------------------------------------'
-                send_message(iscritto_text, t_chat["id"])
+                    # print(iscritto_text)
+                    iscritto_text += f'--------------------------------------'
+                    printdebug(iscritto_text)
+                    send_message(iscritto_text, t_chat["id"])
+            except Exception as e:
+                printdebug(e)
                 # print(iscritto_text)
                 # message_text += iscritto_text
                 # print(message_text)
