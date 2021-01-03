@@ -279,7 +279,12 @@ class CocaBotView(View):
                 send_message("Non mi hai dato niente da cercare!", t_chat["id"])
                 return JsonResponse({"ok": "POST request processed"})
 
-            iscritti_set = get_iscritti(s[1])
+            if len(s) >= 3:
+                show_only_active = (s[2] == 'attivi')
+            else:
+                show_only_active = True
+
+            iscritti_set = get_iscritti(s[1], show_only_active)
 
             message_text = ''
 
@@ -303,7 +308,12 @@ class CocaBotView(View):
                 send_message("Non mi hai dato niente da cercare\!", t_chat["id"])
                 return JsonResponse({"ok": "POST request processed"})
 
-            iscritti_set = get_iscritti(s[1])
+            if len(s) >=3:
+                show_only_active = (s[2] == 'attivi')
+            else:
+                show_only_active = True
+
+            iscritti_set = get_iscritti(s[1], show_only_active)
 
             # message_text = ''
             if iscritti_set.count() < 1:
