@@ -285,6 +285,8 @@ class CocaBotView(View):
                     send_message(iscritto_text, t_chat["id"])
             except Exception as e:
                 printdebug(e)
+                printdebug(sys.exc_info())
+
                 raise e
                 # print(iscritto_text)
                 # message_text += iscritto_text
