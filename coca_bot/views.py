@@ -221,7 +221,7 @@ class CocaBotView(View):
             printdebug(f'{exc_type}, {fname}, {exc_tb.tb_lineno}')
             return JsonResponse({"ok": "POST request processed"})
 
-        send_message(f'Mi dispice, ma non so cosa significa "{t_message["text"]}", la mia intelligenza è limitata. Usa /help per vedere cosa so fare\!',
+        send_message(f'Mi dispice, ma non so cosa significa "{t_message["text"]}", la mia intelligenza è limitata\. Usa /help per vedere cosa so fare\!',
                           t_chat["id"])
         return JsonResponse({"ok": "POST request processed"})
 
