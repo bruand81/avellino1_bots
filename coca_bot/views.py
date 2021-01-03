@@ -22,6 +22,8 @@ from utils.DataLoader import DataLoader
 TELEGRAM_URL = "https://api.telegram.org/bot"
 TUTORIAL_BOT_TOKEN = os.getenv("TUTORIAL_BOT_TOKEN", "error_token")
 ISDEBUG = os.getenv("ISDEBUG", False)
+print(ISDEBUG)
+print(bool(ISDEBUG))
 
 
 # https://api.telegram.org/bot<token>/setWebhook?url=<url>/webhooks/tutorial/
