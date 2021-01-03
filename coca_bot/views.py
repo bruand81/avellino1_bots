@@ -26,7 +26,7 @@ FORCEANSWER = os.getenv("FORCEANSWER", "False") == "True"
 
 
 # https://api.telegram.org/bot<token>/setWebhook?url=<url>/webhooks/tutorial/
-def get_iscritti(search_string: str, show_only_active:bool = False) -> QuerySet:
+def get_iscritti(search_string: str, show_only_active: bool = False) -> QuerySet:
     iscritti_set = Iscritti.objects.filter(
         Q(cognome__icontains=search_string) |
         Q(nome__icontains=search_string) |
@@ -35,6 +35,7 @@ def get_iscritti(search_string: str, show_only_active:bool = False) -> QuerySet:
         Q(branca__icontains=search_string)
     )
     if show_only_active:
+        printdebug(f"Show only active - func: {show_only_active}")
         iscritti_set.filter(
             Q(active=True)
         )
@@ -47,6 +48,7 @@ def get_iscritto_by_codice(search_string: str, show_only_active: bool = False) -
         Q(codice_fiscale__iexact=search_string)
     )
     if show_only_active:
+        printdebug(f"Show only active - func: {show_only_active}")
         iscritti_set.filter(
             Q(active=True)
         )
@@ -281,6 +283,8 @@ class CocaBotView(View):
                 show_only_active = (s[2] == 'attivi')
             else:
                 show_only_active = True
+
+            printdebug(f"Show only active: {show_only_active}")
 
             iscritti_set = get_iscritti(s[1], show_only_active)
 
