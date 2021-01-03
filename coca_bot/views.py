@@ -50,6 +50,14 @@ def get_iscritto_by_telegram(t_user: str) -> QuerySet:
     )
 
 
+def get_enabled() -> QuerySet:
+    return Iscritti.objects.filter(
+        Q(telegram__isnull=False)
+    ).exclude(
+        Q(telegram__iexact='')
+    )
+
+
 def get_iscritto_by_authcode(authcode: str) -> QuerySet:
     return Iscritti.objects.filter(
         Q(authcode__iexact=authcode)
@@ -185,6 +193,12 @@ class CocaBotView(View):
             if s[0] == 'autorizzami':
                 return self.registrami(s, t_user, t_chat)
 
+            if s[0] == 'attiva':
+                return self.imposta_status(s, t_user, t_chat, True)
+
+            if s[0] == 'disattiva':
+                return self.imposta_status(s, t_user, t_chat, False)
+
             if s[0] == 'clearlog':
                 return self.clear_log(s, t_user, t_chat)
         except Exception as e:
@@ -310,6 +324,19 @@ class CocaBotView(View):
             # print(f'Messaggio inviato: {message_text}')
         return JsonResponse({"ok": "POST request processed"})
 
+    def abilitati(self, s: list, t_user: str, t_chat: dict) -> JsonResponse:
+        if self.check_admin(t_user, t_chat["id"]):
+            iscritti_set = get_enabled()
+            text=''
+            for iscritto in iscritti_set:
+                text += f"@{iscritto.telegram}: {clean_message(iscritto.nome)} {clean_message(iscritto.cognome)}\n"
+
+            if iscritti_set.count() < 1:
+                text = 'Non trovo iscritti abilitati'
+            send_message(text, t_chat['id'])
+
+        return JsonResponse({"ok": "POST request processed"})
+
     def generate_codes(self, s, t_user, t_chat):
         if self.check_admin(t_user, t_chat["id"]):
             if len(s) > 1:
@@ -389,7 +416,7 @@ class CocaBotView(View):
             if (not iscritto.role == 'SA') & (not iscritto.role == 'AD'):
                 iscritto.role = 'CA'
                 iscritto.save()
-                send_message(f'{clean_message(iscritto.nome)} {clean_message(iscritto.cognome)} è stato aggiunto in Co\.Ca\.', t_chat["id"])
+                send_message(f'{clean_message(iscritto.nome)} {clean_message(iscritto.cognome)} è stato aggiunt{self.get_gendered_string(iscritto.sesso, "o", "a")} in Co\.Ca\.', t_chat["id"])
                 return JsonResponse({"ok": "POST request processed"})
             else:
                 utente_set = get_iscritto_by_telegram(t_user)
@@ -403,7 +430,41 @@ class CocaBotView(View):
                     return JsonResponse({"ok": "POST request processed"})
                 iscritto.role = 'CA'
                 iscritto.save()
-                send_message(f'{clean_message(iscritto.nome)} {clean_message(iscritto.cognome)}è stato aggiunto in Co\.Ca\.\!', t_chat["id"])
+                send_message(f'{clean_message(iscritto.nome)} {clean_message(iscritto.cognome)}è stato aggiunt{self.get_gendered_string(iscritto.sesso, "o", "a")} in Co\.Ca\.\!', t_chat["id"])
+                return JsonResponse({"ok": "POST request processed"})
+
+        return JsonResponse({"ok": "POST request processed"})
+
+    def imposta_status(self, s: list, t_user: str, t_chat: dict, status:bool) -> JsonResponse:
+        if self.check_admin(t_user, t_chat["id"]):
+            if len(s) < 2:
+                send_message("Non mi hai dato niente da cercare\!", t_chat["id"])
+                return JsonResponse({"ok": "POST request processed"})
+            iscritti_set = get_iscritto_by_codice(s[1])
+            if iscritti_set.count() != 1:
+                send_message(f'L\'iscritto {s[1]} non è valido', t_chat["id"])
+                return JsonResponse({"ok": "POST request processed"})
+
+            iscritto = iscritti_set[0]
+
+            if (not iscritto.role == 'SA') & (not iscritto.role == 'AD'):
+                iscritto.active = status
+                iscritto.save()
+                send_message(f'{clean_message(iscritto.nome)} {clean_message(iscritto.cognome)} è stato {"" if status else "dis"}attivat{self.get_gendered_string(iscritto.sesso,"o", "a")}', t_chat["id"])
+                return JsonResponse({"ok": "POST request processed"})
+            else:
+                utente_set = get_iscritto_by_telegram(t_user)
+                if utente_set.count() == 1:
+                    utente = utente_set[0]
+                    if utente.codice_socio == iscritto.codice_socio:
+                        send_message(f'Non puoi toglierti i poteri da solo\!', t_chat["id"])
+                        return JsonResponse({"ok": "POST request processed"})
+                else:
+                    send_message(f'Qualcosa non ha funzionato...', t_chat["id"])
+                    return JsonResponse({"ok": "POST request processed"})
+                iscritto.active = status
+                iscritto.save()
+                send_message(f'{clean_message(iscritto.nome)} {clean_message(iscritto.cognome)} è stato {"" if status else "dis"}attivat{self.get_gendered_string(iscritto.sesso, "o", "a")}', t_chat["id"])
                 return JsonResponse({"ok": "POST request processed"})
 
         return JsonResponse({"ok": "POST request processed"})
@@ -425,10 +486,10 @@ class CocaBotView(View):
             if (not iscritto.role == 'SA') & (not iscritto.role == 'AD'):
                 iscritto.role = 'IS'
                 iscritto.save()
-                send_message(f'{clean_message(iscritto.nome)} {clean_message(iscritto.cognome)} è stato rimosso dalla Co\.Ca\.\!', t_chat["id"])
+                send_message(f'{clean_message(iscritto.nome)} {clean_message(iscritto.cognome)} è stato rimoss{self.get_gendered_string(iscritto.sesso, "o", "a")} dalla Co\.Ca\.\!', t_chat["id"])
                 return JsonResponse({"ok": "POST request processed"})
             else:
-                send_message(f'{clean_message(iscritto.nome)} {clean_message(iscritto.cognome)} non può essere depotenziato da te perché è {clean_message(iscritto.get_role_display())}\!',
+                send_message(f'{clean_message(iscritto.nome)} {clean_message(iscritto.cognome)} non può essere depotenziat{self.get_gendered_string(iscritto.sesso, "o", "a")} da te perché è {clean_message(iscritto.get_role_display())}\!',
                                   t_chat["id"])
                 return JsonResponse({"ok": "POST request processed"})
 
@@ -451,10 +512,10 @@ class CocaBotView(View):
             if (not iscritto.role == 'SA'):
                 iscritto.role = 'IS'
                 iscritto.save()
-                send_message(f'{clean_message(iscritto.nome)} {clean_message(iscritto.cognome)} è stato rimosso dagli amministratori e dalla Co\.Ca\.\!', t_chat["id"])
+                send_message(f'{clean_message(iscritto.nome)} {clean_message(iscritto.cognome)} è stato rimoss{self.get_gendered_string(iscritto.sesso, "o", "a")} dagli amministratori e dalla Co\.Ca\.\!', t_chat["id"])
                 return JsonResponse({"ok": "POST request processed"})
             else:
-                send_message(f'{clean_message(iscritto.nome)} {clean_message(iscritto.cognome)} è superamministratore, non puoi depotenziarlo\!', t_chat["id"])
+                send_message(f'{clean_message(iscritto.nome)} {clean_message(iscritto.cognome)} è superamministratore, non puoi depotenziarl{self.get_gendered_string(iscritto.sesso, "o", "a")}\!', t_chat["id"])
                 return JsonResponse({"ok": "POST request processed"})
 
         return JsonResponse({"ok": "POST request processed"})
