@@ -291,12 +291,13 @@ class CocaBotView(View):
             message_text = ''
 
             for iscritto in iscritti_set:
-                iscritto_text = f'*Codice Socio:* {clean_message(str(iscritto.codice_socio))}\n' \
-                                f'*Nome:* {clean_message(iscritto.nome)} {clean_message(iscritto.cognome)}\n' \
-                                f'*Branca:* {clean_message(iscritto.branca)}\n'
-                                # f'--                                       --\n'
-                iscritto_text += f'\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\n'
-                message_text += iscritto_text
+                if (not show_only_active) | iscritto.active:
+                    iscritto_text = f'*Codice Socio:* {clean_message(str(iscritto.codice_socio))}\n' \
+                                    f'*Nome:* {clean_message(iscritto.nome)} {clean_message(iscritto.cognome)}\n' \
+                                    f'*Branca:* {clean_message(iscritto.branca)}\n'
+                                    # f'--                                       --\n'
+                    iscritto_text += f'\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\n'
+                    message_text += iscritto_text
 
             if message_text == '':
                 message_text = 'Nessun iscritto con i criteri di ricerca specificati'
