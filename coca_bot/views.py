@@ -23,6 +23,8 @@ TELEGRAM_URL = "https://api.telegram.org/bot"
 TUTORIAL_BOT_TOKEN = os.getenv("TUTORIAL_BOT_TOKEN", "error_token")
 ISDEBUG = os.getenv("ISDEBUG", "False") == "True"
 FORCEANSWER = os.getenv("FORCEANSWER", "False") == "True"
+print(ISDEBUG)
+print(type(ISDEBUG))
 
 
 # https://api.telegram.org/bot<token>/setWebhook?url=<url>/webhooks/tutorial/
@@ -118,7 +120,7 @@ def print_mail_field(email:str) -> str:
     if email is None:
         return ' \- '
     else:
-        return f"[{clean_message(email)}](mailto:{email})"
+        return f"{clean_message(email)}"
 
 
 class CocaBotView(View):
