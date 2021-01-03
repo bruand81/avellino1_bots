@@ -109,7 +109,7 @@ def print_mail_field(email:str) -> str:
     if email is None:
         return ' \- '
     else:
-        return f"[{clean_message(email)}]({email})"
+        return f"[{clean_message(email)}](mailto:{email})"
 
 
 class CocaBotView(View):
@@ -284,11 +284,11 @@ class CocaBotView(View):
                                     f'*Email:* {print_mail_field(iscritto.email)}\n' \
                                     f'*Fo\.Ca\.:* {clean_message(iscritto.livello_foca)}\n'
                     # print(iscritto_text)
-                    # if self.check_admin(t_user, t_chat['id'], False):
-                    #     iscritto_text += f'*Ruolo:* {clean_message(iscritto.get_role_display())}\n'
-                    #     iscritto_text += f'*Telegram:* {"" if iscritto.telegram is None else "@"}{parse_none_string(iscritto.telegram)}\n'
-                    #     iscritto_text += f'*AuthCode:* {clean_message(parse_none_string(iscritto.authcode))}\n'
-                    #     iscritto_text += f'*Attivo:* {"Si" if iscritto.active else "No"}\n'
+                    if self.check_admin(t_user, t_chat['id'], False):
+                        iscritto_text += f'*Ruolo:* {clean_message(iscritto.get_role_display())}\n'
+                        iscritto_text += f'*Telegram:* {"" if iscritto.telegram is None else "@"}{parse_none_string(iscritto.telegram)}\n'
+                        iscritto_text += f'*AuthCode:* {clean_message(parse_none_string(iscritto.authcode))}\n'
+                        iscritto_text += f'*Attivo:* {"Si" if iscritto.active else "No"}\n'
 
                     # print(iscritto_text)
                     iscritto_text += f'\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\n'
