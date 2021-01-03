@@ -99,6 +99,7 @@ class CocaBotView(View):
         t_data = json.loads(request.body)
         t_message = t_data["message"]
         t_chat = t_message["chat"]
+        print(t_chat)
         if 'username' in t_message['from'].keys():
             t_user = t_message['from']['username']
         else:
