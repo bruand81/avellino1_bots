@@ -236,8 +236,9 @@ class CocaBotView(View):
             for iscritto in iscritti_set:
                 iscritto_text = f'*Codice Socio:* {clean_message(str(iscritto.codice_socio))}\n' \
                                 f'*Nome:* {clean_message(iscritto.nome)} {clean_message(iscritto.cognome)}\n' \
-                                f'*Branca:* {clean_message(iscritto.branca)}\n' \
+                                f'*Branca:* {clean_message(iscritto.branca)}\n'
                                 # f'--                                       --\n'
+                # iscritto_text += f'--                                       --\n'
                 message_text += iscritto_text
 
             if message_text == '':
