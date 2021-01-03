@@ -28,21 +28,31 @@ print(type(ISDEBUG))
 
 
 # https://api.telegram.org/bot<token>/setWebhook?url=<url>/webhooks/tutorial/
-def get_iscritti(search_string):
-    return Iscritti.objects.filter(
+def get_iscritti(search_string: str, show_only_active:bool = False) -> QuerySet:
+    iscritti_set = Iscritti.objects.filter(
         Q(cognome__icontains=search_string) |
         Q(nome__icontains=search_string) |
         Q(codice_socio__icontains=search_string) |
         Q(codice_fiscale__icontains=search_string) |
         Q(branca__icontains=search_string)
     )
+    if show_only_active:
+        iscritti_set.exclude(
+            Q(active=False)
+        )
+    return iscritti_set
 
 
-def get_iscritto_by_codice(search_string: str) -> QuerySet:
-    return Iscritti.objects.filter(
+def get_iscritto_by_codice(search_string: str, show_only_active:bool = False) -> QuerySet:
+    iscritti_set = Iscritti.objects.filter(
         Q(codice_socio__iexact=search_string) |
         Q(codice_fiscale__iexact=search_string)
     )
+    if show_only_active:
+        iscritti_set.exclude(
+            Q(active=False)
+        )
+    return iscritti_set
 
 
 def get_iscritto_by_telegram(t_user: str) -> QuerySet:
@@ -55,7 +65,8 @@ def get_enabled() -> QuerySet:
     return Iscritti.objects.filter(
         Q(telegram__isnull=False)
     ).exclude(
-        Q(telegram__iexact='')
+        Q(telegram__iexact='') &
+        Q(active=False)
     )
 
 
