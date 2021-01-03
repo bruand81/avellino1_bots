@@ -1,6 +1,7 @@
 import json
 import os
 import re
+import sys
 
 import requests
 from django.http import JsonResponse
@@ -106,7 +107,6 @@ class CocaBotView(View):
         t_data = json.loads(request.body)
         t_message = t_data["message"]
         t_chat = t_message["chat"]
-        printdebug(t_data)
         if 'username' in t_message['from'].keys():
             t_user = t_message['from']['username']
         else:
@@ -128,7 +128,6 @@ class CocaBotView(View):
 
         text = text.lstrip("/")
         s = split(text, posix=True)
-        printdebug("Text splitted")
 
         try:
 
@@ -138,7 +137,6 @@ class CocaBotView(View):
                 return JsonResponse({"ok": "POST request processed"})
 
             if s[0] == 'info':
-                printdebug("Invoked info")
                 return self.get_info(s, t_user, t_chat)
 
             if s[0] == 'codicesocio':
@@ -179,7 +177,11 @@ class CocaBotView(View):
             if s[0] == 'clearlog':
                 return self.clear_log(s, t_user, t_chat)
         except Exception as e:
-            printdebug(str(e))
+            send_message("Si è verificato un errore sul server\! Riprova più tardi")
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            printdebug(f'{exc_type}, {fname}, {exc_tb.tb_lineno}')
+            return JsonResponse({"ok": "POST request processed"})
 
         send_message(f'Mi dispice, ma non so cosa significa "{t_message["text"]}", la mia intelligenza è limitata. Usa /help per vedere cosa so fare\!',
                           t_chat["id"])
@@ -244,7 +246,6 @@ class CocaBotView(View):
         return JsonResponse({"ok": "POST request processed"})
 
     def get_info(self, s, t_user, t_chat):
-        printdebug(f'Invoked info {s}, {t_user} {t_chat}')
         if self.check_user(t_user, t_chat["id"]):
             if len(s) < 2:
                 send_message("Non mi hai dato niente da cercare!", t_chat["id"])
