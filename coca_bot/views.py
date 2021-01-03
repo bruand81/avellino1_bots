@@ -22,6 +22,7 @@ from utils.DataLoader import DataLoader
 TELEGRAM_URL = "https://api.telegram.org/bot"
 TUTORIAL_BOT_TOKEN = os.getenv("TUTORIAL_BOT_TOKEN", "error_token")
 ISDEBUG = os.getenv("ISDEBUG", False) == "True"
+FORCEANSWER = os.getenv("FORCEANSWER", False) == "True"
 
 
 # https://api.telegram.org/bot<token>/setWebhook?url=<url>/webhooks/tutorial/
@@ -122,7 +123,8 @@ def print_mail_field(email:str) -> str:
 
 class CocaBotView(View):
     def post(self, request, *args, **kwargs):
-        return JsonResponse({"ok": "POST request processed"})
+        if FORCEANSWER:
+            return JsonResponse({"ok": "POST request processed"})
         t_data = json.loads(request.body)
         t_message = t_data["message"]
         t_chat = t_message["chat"]
