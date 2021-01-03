@@ -21,8 +21,8 @@ from utils.DataLoader import DataLoader
 
 TELEGRAM_URL = "https://api.telegram.org/bot"
 TUTORIAL_BOT_TOKEN = os.getenv("TUTORIAL_BOT_TOKEN", "error_token")
-ISDEBUG = os.getenv("ISDEBUG", False) == "True"
-FORCEANSWER = os.getenv("FORCEANSWER", False) == "True"
+ISDEBUG = os.getenv("ISDEBUG", "False") == "True"
+FORCEANSWER = os.getenv("FORCEANSWER", "False") == "True"
 
 
 # https://api.telegram.org/bot<token>/setWebhook?url=<url>/webhooks/tutorial/
@@ -72,7 +72,7 @@ def get_logs_by_date_gte(days: int) -> QuerySet:
     date_to = datetime.now() - timedelta(days=7)
     return AppLogs.objects.filter(
         Q(log_time__date__gte=date_to)
-    )
+    ).order_by('-log_time')[:20]
 
 
 def get_logs_by_date_lt(days: int) -> QuerySet:
@@ -124,6 +124,8 @@ def print_mail_field(email:str) -> str:
 class CocaBotView(View):
     def post(self, request, *args, **kwargs):
         if FORCEANSWER:
+            print("Answer forced")
+            send_message("Si è verificato un errore sul server\! Riprova più tardi")
             return JsonResponse({"ok": "POST request processed"})
         t_data = json.loads(request.body)
         t_message = t_data["message"]
