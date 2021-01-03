@@ -89,6 +89,9 @@ def send_message(message, chat_id):
     response = requests.post(
         f"{TELEGRAM_URL}{TUTORIAL_BOT_TOKEN}/sendMessage", data=data
     )
+    if(response.status_code != 200):
+        print(response.status_code)
+        print(response.reason)
 
 
 class CocaBotView(View):
