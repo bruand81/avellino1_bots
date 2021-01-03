@@ -93,9 +93,10 @@ def send_message(message, chat_id):
         f"{TELEGRAM_URL}{TUTORIAL_BOT_TOKEN}/sendMessage", data=data
     )
     if(response.status_code != 200):
-        printdebug(response.status_code)
-        printdebug(response.reason)
-        printdebug(response.content)
+        print(response.status_code)
+        print(response.reason)
+        print(response.content)
+        print(message)
         send_message("Si è verificato un errore sul server\! Riprova più tardi", chat_id)
 
 def printdebug(string:any):
