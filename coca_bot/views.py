@@ -19,6 +19,7 @@ from utils.DataLoader import DataLoader
 
 TELEGRAM_URL = "https://api.telegram.org/bot"
 TUTORIAL_BOT_TOKEN = os.getenv("TUTORIAL_BOT_TOKEN", "error_token")
+ISDEBUG = os.getenv("ISDEBUG", False)
 
 
 # https://api.telegram.org/bot<token>/setWebhook?url=<url>/webhooks/tutorial/
@@ -89,11 +90,15 @@ def send_message(message, chat_id):
     response = requests.post(
         f"{TELEGRAM_URL}{TUTORIAL_BOT_TOKEN}/sendMessage", data=data
     )
-    print(response.status_code)
-    print(response.reason)
+    printdebug(response.status_code)
+    printdebug(response.reason)
     if(response.status_code != 200):
-        print(response.status_code)
-        print(response.reason)
+        printdebug(response.status_code)
+        printdebug(response.reason)
+
+def printdebug(string:any):
+    if ISDEBUG:
+        print(string)
 
 
 class CocaBotView(View):
@@ -101,7 +106,7 @@ class CocaBotView(View):
         t_data = json.loads(request.body)
         t_message = t_data["message"]
         t_chat = t_message["chat"]
-        print(t_data)
+        printdebug(t_data)
         if 'username' in t_message['from'].keys():
             t_user = t_message['from']['username']
         else:
@@ -119,9 +124,11 @@ class CocaBotView(View):
         )
 
         applog.save()
+        printdebug("log_saved")
 
         text = text.lstrip("/")
         s = split(text, posix=True)
+        printdebug("Text splitted")
 
         if s[0] == 'start':
             send_message(f'Benvenuto sul bot della *Comunità Capi AGESCI Avellino 1*\n'
@@ -129,6 +136,7 @@ class CocaBotView(View):
             return JsonResponse({"ok": "POST request processed"})
 
         if s[0] == 'info':
+            printdebug("Invoked info")
             return self.get_info(s, t_user, t_chat)
 
         if s[0] == 'codicesocio':
@@ -232,6 +240,7 @@ class CocaBotView(View):
         return JsonResponse({"ok": "POST request processed"})
 
     def get_info(self, s, t_user, t_chat):
+        printdebug(f'Invoked info {s}, {t_user} {t_chat}')
         if self.check_user(t_user, t_chat["id"]):
             if len(s) < 2:
                 send_message("Non mi hai dato niente da cercare!", t_chat["id"])
