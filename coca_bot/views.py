@@ -99,9 +99,17 @@ def send_message(message, chat_id):
         print(message)
         send_message("Si è verificato un errore sul server\! Riprova più tardi", chat_id)
 
+
 def printdebug(string:any):
     if ISDEBUG:
         print(string)
+
+
+def print_mail_field(email:str) -> str:
+    if email is None:
+        return ' \- '
+    else:
+        return f"[{clean_message(email)}]({email})"
 
 
 class CocaBotView(View):
@@ -273,8 +281,8 @@ class CocaBotView(View):
                                     f'*Privacy:* *_2\.a_* {"Si" if iscritto.informativa2a else "No"} \- *_2\.b_* {"Si" if iscritto.informativa2b else "No"} \- *_Immagini_* {"Si" if iscritto.consenso_immagini else "No"}\n' \
                                     f'*Branca:* {clean_message(iscritto.branca)}\n' \
                                     f'*Cellulare:* {clean_message(parse_none_string(iscritto.cellulare))}\n' \
-                                    f'*Email:* {clean_message(parse_none_string(iscritto.email))}\n' \
-                                    f'*Fo.Ca.:* {clean_message(iscritto.livello_foca)}\n'
+                                    f'*Email:* {print_mail_field(iscritto.email)}\n' \
+                                    f'*Fo\.Ca\.:* {clean_message(iscritto.livello_foca)}\n'
                     # print(iscritto_text)
                     # if self.check_admin(t_user, t_chat['id'], False):
                     #     iscritto_text += f'*Ruolo:* {clean_message(iscritto.get_role_display())}\n'
