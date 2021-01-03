@@ -250,7 +250,7 @@ class CocaBotView(View):
     def get_info(self, s, t_user, t_chat):
         if self.check_user(t_user, t_chat["id"]):
             if len(s) < 2:
-                send_message("Non mi hai dato niente da cercare!", t_chat["id"])
+                send_message("Non mi hai dato niente da cercare\!", t_chat["id"])
                 return JsonResponse({"ok": "POST request processed"})
 
             iscritti_set = get_iscritti(s[1])
@@ -386,7 +386,7 @@ class CocaBotView(View):
                 if utente_set.count() == 1:
                     utente = utente_set[0]
                     if utente.codice_socio == iscritto.codice_socio:
-                        send_message(f'Non puoi toglierti i poteri da solo!', t_chat["id"])
+                        send_message(f'Non puoi toglierti i poteri da solo\!', t_chat["id"])
                         return JsonResponse({"ok": "POST request processed"})
                 else:
                     send_message(f'Qualcosa non ha funzionato...', t_chat["id"])
@@ -395,9 +395,6 @@ class CocaBotView(View):
                 iscritto.save()
                 send_message(f'{clean_message(iscritto.nome)} {clean_message(iscritto.cognome)}è stato aggiunto in Co\.Ca\.\!', t_chat["id"])
                 return JsonResponse({"ok": "POST request processed"})
-
-            # self.send_message(f'{iscritto.nome} {iscritto.cognome} è già in Co.Ca.!', t_chat["id"])
-            # return JsonResponse({"ok": "POST request processed"})
 
         return JsonResponse({"ok": "POST request processed"})
 
@@ -489,9 +486,9 @@ class CocaBotView(View):
                 email_from = settings.EMAIL_FROM
                 recipient_list = iscritto.email.split(';')
                 send_mail(subject, message, email_from, recipient_list, fail_silently=False, html_message=message_html)
-                send_message('Email inviata!', chat_id)
+                send_message('Email inviata\!', chat_id)
                 return JsonResponse({"ok": "POST request processed"})
-        send_message('Non ti ho trovato nell\'elenco, chiedi aiuto ai capigruppo!', chat_id)
+        send_message('Non ti ho trovato nell\'elenco, chiedi aiuto ai capigruppo\!', chat_id)
         return JsonResponse({"ok": "POST request processed"})
 
     def help(self, chat_id: int) -> JsonResponse:
