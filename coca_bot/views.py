@@ -199,6 +199,15 @@ class CocaBotView(View):
             if s[0] == 'disattiva':
                 return self.imposta_status(s, t_user, t_chat, False)
 
+            if s[0] == 'attiva':
+                return self.imposta_status(s, t_user, t_chat, True)
+
+            if s[0] == 'abilitati':
+                return self.abilitati(s, t_user, t_chat)
+
+            if s[0] == 'getlog':
+                return self.get_log(s, t_user, t_chat)
+
             if s[0] == 'clearlog':
                 return self.clear_log(s, t_user, t_chat)
         except Exception as e:
@@ -520,6 +529,22 @@ class CocaBotView(View):
 
         return JsonResponse({"ok": "POST request processed"})
 
+    def get_log(self, s: list, t_user: str, t_chat: dict) -> JsonResponse:
+        if self.check_super_admin(t_user, t_chat["id"]):
+            max_days = 7
+            if len(s) > 1:
+                try:
+                    max_days = int(s[1])
+                except:
+                    max_days = 7
+            log_set = get_logs_by_date_gte(max_days)
+            for logentry in log_set:
+                text=clean_message(f"{logentry.log_time}: {logentry.username} - {logentry.command}")
+                send_message(text,t_chat['id'])
+
+        return JsonResponse({"ok": "POST request processed"})
+
+
     def aggiorna_lista(self, s: list, t_user: str, t_chat: dict) -> JsonResponse:
         if self.check_admin(t_user, t_chat["id"]):
             url = settings.SHAREPOINT_URL
@@ -564,18 +589,21 @@ class CocaBotView(View):
 
     def help(self, chat_id: int) -> JsonResponse:
         help_text = ''
-        help_text += '/info \- Ottiene le info di un socio del gruppo, si può cercare per cognome, nome, codice socio, codice fiscale o unità \[L/C, E/G, R/S, Adulti\]\n'
-        help_text += '/codicesocio \- Ottiene il codice socio di un socio del gruppo, si può cercare per cognome, nome, codice socio, codice fiscale o unità \[L/C, E/G, R/S, Adulti\]\n'
-        help_text += '/generacodice \- Genera il codice di autorizzazione per potersi abilitare all\'uso del bot\n'
-        help_text += '/inviacodice \- Invia il di autorizzazione per potersi abilitare all\'uso del bot all\'indirizzo email registrato su Buonastrada, si può cercare per codice socio, codice fiscale\n'
-        help_text += '/registrami \- Registra l\'account telegram al bot. Richiede codice di autorizzazione\n'
-        help_text += '/aggiungiadmin \- Aggiunge un amministratore del bot. Solo per amministratori\n'
-        help_text += '/aggiungicapo \- Aggiunge un un capo del gruppo. Solo per amministratori\n'
-        help_text += '/rimuoviadmin \- Rimuove un amministratore del bot. Solo per amministratori\n'
-        help_text += '/rimuovicapo \- Rimuove un un capo del gruppo. Solo per amministratori\n'
-        help_text += '/aggiorna \- Aggiorna la lista soci dal file excel su onedrive. Solo per amministratori\n'
-        help_text += '/help \- Mostra questa guida ai comandi\n'
-        send_message(help_text, chat_id)
+        help_text += '/info - Ottiene le info di un socio del gruppo, si può cercare per cognome, nome, codice socio, codice fiscale o unità [L/C, E/G, R/S, Adulti]\n'
+        help_text += '/codicesocio - Ottiene il codice socio di un socio del gruppo, si può cercare per cognome, nome, codice socio, codice fiscale o unità [L/C, E/G, R/S, Adulti]\n'
+        help_text += '/generacodice - Genera il codice di autorizzazione per potersi abilitare all\'uso del bot\n'
+        help_text += '/inviacodice - Invia il di autorizzazione per potersi abilitare all\'uso del bot all\'indirizzo email registrato su Buonastrada, si può cercare per codice socio, codice fiscale\n'
+        help_text += '/registrami - Registra l\'account telegram al bot. Richiede codice di autorizzazione\n'
+        help_text += '/aggiungiadmin - Aggiunge un amministratore del bot. Solo per amministratori\n'
+        help_text += '/aggiungicapo - Aggiunge un un capo del gruppo. Solo per amministratori\n'
+        help_text += '/rimuoviadmin - Rimuove un amministratore del bot. Solo per amministratori\n'
+        help_text += '/rimuovicapo - Rimuove un un capo del gruppo. Solo per amministratori\n'
+        help_text += '/aggiorna - Aggiorna la lista soci dal file excel su onedrive. Solo per amministratori\n'
+        help_text += '/attiva - Attiva un iscritto. Solo per amministratorii\n'
+        help_text += '/disattiva - Disattiva un iscritto. Solo per amministratori\n'
+        help_text += '/abilitati - Lista abilitati. Solo per amministratori\n'
+        help_text += '/help - Mostra questa guida ai comandi\n'
+        send_message(clean_message(help_text), chat_id)
         return JsonResponse({"ok": "POST request processed"})
 
     def get_gendered_string(self, sesso: str, maschile: str, femminile: str) -> str:
