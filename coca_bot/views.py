@@ -23,8 +23,6 @@ TELEGRAM_URL = "https://api.telegram.org/bot"
 TUTORIAL_BOT_TOKEN = os.getenv("TUTORIAL_BOT_TOKEN", "error_token")
 ISDEBUG = os.getenv("ISDEBUG", "False") == "True"
 FORCEANSWER = os.getenv("FORCEANSWER", "False") == "True"
-print(ISDEBUG)
-print(type(ISDEBUG))
 
 
 # https://api.telegram.org/bot<token>/setWebhook?url=<url>/webhooks/tutorial/
@@ -37,20 +35,20 @@ def get_iscritti(search_string: str, show_only_active:bool = False) -> QuerySet:
         Q(branca__icontains=search_string)
     )
     if show_only_active:
-        iscritti_set.exclude(
-            Q(active=False)
+        iscritti_set.filter(
+            Q(active=True)
         )
     return iscritti_set
 
 
-def get_iscritto_by_codice(search_string: str, show_only_active:bool = False) -> QuerySet:
+def get_iscritto_by_codice(search_string: str, show_only_active: bool = False) -> QuerySet:
     iscritti_set = Iscritti.objects.filter(
         Q(codice_socio__iexact=search_string) |
         Q(codice_fiscale__iexact=search_string)
     )
     if show_only_active:
-        iscritti_set.exclude(
-            Q(active=False)
+        iscritti_set.filter(
+            Q(active=True)
         )
     return iscritti_set
 
