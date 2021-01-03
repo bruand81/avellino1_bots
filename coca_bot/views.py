@@ -272,9 +272,9 @@ class CocaBotView(View):
                                     f'*Residenza:* {clean_message(iscritto.indirizzo)} {clean_message(iscritto.civico)}, {clean_message(iscritto.cap)} {clean_message(iscritto.comune)} \({clean_message(iscritto.provincia)}\)\n' \
                                     f'*Privacy:* *_2\.a_* {"Si" if iscritto.informativa2a else "No"} \- *_2\.b_* {"Si" if iscritto.informativa2b else "No"} \- *_Immagini_* {"Si" if iscritto.consenso_immagini else "No"}\n' \
                                     f'*Branca:* {clean_message(iscritto.branca)}\n' \
-                                    # f'*Cellulare:* {clean_message(parse_none_string(iscritto.cellulare))}\n' \
-                                    # f'*Email:* {clean_message(parse_none_string(iscritto.email))}\n' \
-                                    # f'*Fo.Ca.:* {clean_message(iscritto.livello_foca)}\n'
+                                    f'*Cellulare:* {clean_message(parse_none_string(iscritto.cellulare))}\n' \
+                                    f'*Email:* {clean_message(parse_none_string(iscritto.email))}\n' \
+                                    f'*Fo.Ca.:* {clean_message(iscritto.livello_foca)}\n'
                     # print(iscritto_text)
                     # if self.check_admin(t_user, t_chat['id'], False):
                     #     iscritto_text += f'*Ruolo:* {clean_message(iscritto.get_role_display())}\n'
