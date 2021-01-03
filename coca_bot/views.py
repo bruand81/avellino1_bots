@@ -2,6 +2,7 @@ import json
 import os
 import re
 import sys
+import traceback
 
 import requests
 from django.http import JsonResponse
@@ -285,8 +286,8 @@ class CocaBotView(View):
                     send_message(iscritto_text, t_chat["id"])
             except Exception as e:
                 printdebug(e)
-                printdebug(sys.exc_info())
-
+                if ISDEBUG:
+                    traceback.print_exc(file=sys.stdout)
                 raise e
                 # print(iscritto_text)
                 # message_text += iscritto_text
