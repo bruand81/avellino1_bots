@@ -241,7 +241,7 @@ class CocaBotView(View):
     def clear_log(self, s: list, t_user: str, t_chat: dict) -> JsonResponse:
         if self.check_super_admin(t_user, t_chat["id"]):
             get_logs_by_date_lt(7).delete()
-            send_message("Fatto!", t_chat["id"])
+            send_message("Fatto\!", t_chat["id"])
             return JsonResponse({"ok": "POST request processed"})
         return JsonResponse({"ok": "POST request processed"})
 
