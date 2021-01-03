@@ -237,7 +237,7 @@ class CocaBotView(View):
                 iscritto_text = f'*Codice Socio:* {clean_message(str(iscritto.codice_socio))}\n' \
                                 f'*Nome:* {clean_message(iscritto.nome)} {clean_message(iscritto.cognome)}\n' \
                                 f'*Branca:* {clean_message(iscritto.branca)}\n' \
-                                f'--                                       --\n'
+                                # f'--                                       --\n'
                 message_text += iscritto_text
 
             if message_text == '':
@@ -282,7 +282,7 @@ class CocaBotView(View):
                         iscritto_text += f'*Attivo:* {"Si" if iscritto.active else "No"}\n'
 
                     # print(iscritto_text)
-                    iscritto_text += f'--                                       --\n'
+                    # iscritto_text += f'--                                       --\n'
                     printdebug(iscritto_text)
                     send_message(iscritto_text, t_chat["id"])
             except Exception as e:
