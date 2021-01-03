@@ -83,7 +83,7 @@ def get_logs_by_date_gte(days: int) -> QuerySet:
     date_to = datetime.now() - timedelta(days=7)
     return AppLogs.objects.filter(
         Q(log_time__date__gte=date_to)
-    ).order_by('-log_time')[:20]
+    ).order_by('log_time')[:20]
 
 
 def get_logs_by_date_lt(days: int) -> QuerySet:
