@@ -130,52 +130,56 @@ class CocaBotView(View):
         s = split(text, posix=True)
         printdebug("Text splitted")
 
-        if s[0] == 'start':
-            send_message(f'Benvenuto sul bot della *Comunità Capi AGESCI Avellino 1*\n'
-                         f'Se sei un capo di questa Comunità Capi usa il codice ricevuto per email per registrarti\!', t_chat["id"])
-            return JsonResponse({"ok": "POST request processed"})
+        try:
 
-        if s[0] == 'info':
-            printdebug("Invoked info")
-            return self.get_info(s, t_user, t_chat)
-
-        if s[0] == 'codicesocio':
-            return self.get_codice(s, t_user, t_chat)
-
-        if s[0] == 'generacodice':
-            return self.generate_codes(s, t_user, t_chat)
-        if s[0] == 'inviacodice':
-            if len(s) < 2:
-                send_message("Non mi hai detto a chi devo mandare il codice\!", t_chat["id"])
+            if s[0] == 'start':
+                send_message(f'Benvenuto sul bot della *Comunità Capi AGESCI Avellino 1*\n'
+                             f'Se sei un capo di questa Comunità Capi usa il codice ricevuto per email per registrarti\!', t_chat["id"])
                 return JsonResponse({"ok": "POST request processed"})
-            return self.invia_codice_per_mail(s[1], t_chat['id'])
 
-        if s[0] == 'aggiungiadmin':
-            return self.crea_admin(s, t_user, t_chat)
+            if s[0] == 'info':
+                printdebug("Invoked info")
+                return self.get_info(s, t_user, t_chat)
 
-        if s[0] == 'aggiungicapo':
-            return self.crea_coca(s, t_user, t_chat)
+            if s[0] == 'codicesocio':
+                return self.get_codice(s, t_user, t_chat)
 
-        if s[0] == 'rimuoviadmin':
-            return self.rimuovi_admin(s, t_user, t_chat)
+            if s[0] == 'generacodice':
+                return self.generate_codes(s, t_user, t_chat)
+            if s[0] == 'inviacodice':
+                if len(s) < 2:
+                    send_message("Non mi hai detto a chi devo mandare il codice\!", t_chat["id"])
+                    return JsonResponse({"ok": "POST request processed"})
+                return self.invia_codice_per_mail(s[1], t_chat['id'])
 
-        if s[0] == 'rimuovicapo':
-            return self.rimuovi_coca(s, t_user, t_chat)
+            if s[0] == 'aggiungiadmin':
+                return self.crea_admin(s, t_user, t_chat)
 
-        if s[0] == 'aggiorna':
-            return self.aggiorna_lista(s, t_user, t_chat)
+            if s[0] == 'aggiungicapo':
+                return self.crea_coca(s, t_user, t_chat)
 
-        if s[0] == 'help':
-            return self.help(t_chat['id'])
+            if s[0] == 'rimuoviadmin':
+                return self.rimuovi_admin(s, t_user, t_chat)
 
-        if s[0] == 'registrami':
-            return self.registrami(s, t_user, t_chat)
+            if s[0] == 'rimuovicapo':
+                return self.rimuovi_coca(s, t_user, t_chat)
 
-        if s[0] == 'autorizzami':
-            return self.registrami(s, t_user, t_chat)
+            if s[0] == 'aggiorna':
+                return self.aggiorna_lista(s, t_user, t_chat)
 
-        if s[0] == 'clearlog':
-            return self.clear_log(s, t_user, t_chat)
+            if s[0] == 'help':
+                return self.help(t_chat['id'])
+
+            if s[0] == 'registrami':
+                return self.registrami(s, t_user, t_chat)
+
+            if s[0] == 'autorizzami':
+                return self.registrami(s, t_user, t_chat)
+
+            if s[0] == 'clearlog':
+                return self.clear_log(s, t_user, t_chat)
+        except Exception as e:
+            printdebug(str(e))
 
         send_message(f'Mi dispice, ma non so cosa significa "{t_message["text"]}", la mia intelligenza è limitata. Usa /help per vedere cosa so fare\!',
                           t_chat["id"])
