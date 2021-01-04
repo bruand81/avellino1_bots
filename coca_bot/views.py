@@ -156,7 +156,7 @@ class CocaBotView(View):
         if 'username' in t_message['from'].keys():
             t_user_name = t_message['from']['username']
         else:
-            t_user_name = f"user_{t_user}"
+            t_user_name = f"user{t_user}"
 
         print(f"{t_user} - {t_user_name}")
 
