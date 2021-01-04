@@ -149,7 +149,7 @@ class CocaBotView(View):
             return JsonResponse({"ok": "POST request processed"})
 
         if 'id' in t_message['from'].keys():
-            t_user = t_message['from']['id']
+            t_user = str(t_message['from']['id'])
         else:
             t_user = None
 
