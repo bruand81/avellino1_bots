@@ -276,7 +276,7 @@ class CocaBotView(View):
             return JsonResponse({"ok": "POST request processed"})
         nuovo_iscritto_set = get_iscritto_by_telegram(t_user)
         if nuovo_iscritto_set.count() != 1:
-            send_message("Il codice di autorizzaiozne inviato non è valido!", t_chat["id"])
+            send_message("Il codice di autorizzaiozne inviato non è valido\!", t_chat["id"])
             return JsonResponse({"ok": "POST request processed"})
 
         iscritto_set = get_iscritto_by_telegram(t_user)
