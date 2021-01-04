@@ -224,13 +224,13 @@ class CocaBotView(View):
                 return self.help(t_chat['id'])
 
             if s[0] == 'registrami':
-                text = t_message["text"].strip().lower()
+                text = t_message["text"].strip()
                 text = text.lstrip("/")
                 s = split(text, posix=True)
                 return self.registrami(s, t_user, t_chat, t_user_name)
 
             if s[0] == 'autorizzami':
-                text = t_message["text"].strip().lower()
+                text = t_message["text"].strip()
                 text = text.lstrip("/")
                 s = split(text, posix=True)
                 return self.registrami(s, t_user, t_chat, t_user_name)
