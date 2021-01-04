@@ -26,7 +26,7 @@ FORCEANSWER = os.getenv("FORCEANSWER", "False") == "True"
 
 
 # https://api.telegram.org/bot<token>/setWebhook?url=<url>/webhooks/tutorial/
-def get_iscritti(search_string: str, show_only_active: bool = False) -> QuerySet:
+def get_iscritti(search_string: str, show_only_active: bool = False, show_all: bool = False) -> QuerySet:
     iscritti_set = Iscritti.objects.filter(
         Q(cognome__icontains=search_string) |
         Q(nome__icontains=search_string) |
@@ -34,6 +34,8 @@ def get_iscritti(search_string: str, show_only_active: bool = False) -> QuerySet
         Q(codice_fiscale__icontains=search_string) |
         Q(branca__icontains=search_string)
     )
+    if show_all:
+        iscritti_set = Iscritti.objects.all()
     if show_only_active:
         printdebug(f"Show only active - func: {show_only_active}")
         iscritti_set.filter(
@@ -275,12 +277,16 @@ class CocaBotView(View):
 
     def get_codice(self, s, t_user, t_chat):
         if self.check_user(t_user, t_chat["id"]):
+            show_all = False
             if len(s) < 2:
                 # send_message("Non mi hai dato niente da cercare!", t_chat["id"])
                 # return JsonResponse({"ok": "POST request processed"})
                 search_string = '*'
+                show_all=True
             else:
                 search_string = s[1]
+                if search_string == "tutti":
+                    show_all = True
 
             if len(s) >= 3:
                 show_only_active = (s[2] == 'attivi')
@@ -289,7 +295,7 @@ class CocaBotView(View):
 
             printdebug(f"Show only active: {show_only_active}")
 
-            iscritti_set = get_iscritti(search_string, show_only_active)
+            iscritti_set = get_iscritti(search_string, show_only_active=show_only_active, show_all=show_all)
 
             message_text = ''
             counter = 0
@@ -316,16 +322,25 @@ class CocaBotView(View):
 
     def get_info(self, s, t_user, t_chat):
         if self.check_user(t_user, t_chat["id"]):
+            show_all = False
             if len(s) < 2:
-                send_message("Non mi hai dato niente da cercare\!", t_chat["id"])
-                return JsonResponse({"ok": "POST request processed"})
+                # send_message("Non mi hai dato niente da cercare!", t_chat["id"])
+                # return JsonResponse({"ok": "POST request processed"})
+                search_string = '*'
+                show_all = True
+            else:
+                search_string = s[1]
+                if search_string == "tutti":
+                    show_all = True
 
-            if len(s) >=3:
+            if len(s) >= 3:
                 show_only_active = (s[2] == 'attivi')
             else:
                 show_only_active = True
 
-            iscritti_set = get_iscritti(s[1], show_only_active)
+            printdebug(f"Show only active: {show_only_active}")
+
+            iscritti_set = get_iscritti(search_string, show_only_active=show_only_active, show_all=show_all)
 
             # message_text = ''
             if iscritti_set.count() < 1:
