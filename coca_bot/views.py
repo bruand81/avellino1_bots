@@ -138,14 +138,15 @@ def print_mail_field(email:str) -> str:
 
 class CocaBotView(View):
     def post(self, request, *args, **kwargs):
-        if FORCEANSWER:
-            print("Answer forced")
-            send_message(clean_message(f"Si è verificato un errore sul server! Riprova più tardi"))
-            return JsonResponse({"ok": "POST request processed"})
+
         t_data = json.loads(request.body)
-        print(t_data)
         t_message = t_data["message"]
         t_chat = t_message["chat"]
+        if FORCEANSWER:
+            print("Answer forced")
+            print(t_data)
+            send_message(clean_message(f"Si è verificato un errore sul server! Riprova più tardi"), t_chat['id'])
+            return JsonResponse({"ok": "POST request processed"})
 
         if 'id' in t_message['from'].keys():
             t_user = t_message['from']['id']
