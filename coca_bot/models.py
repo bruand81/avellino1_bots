@@ -34,6 +34,7 @@ class Iscritti(models.Model):
     cellulare = models.TextField(null=True, blank=True)
     email = models.EmailField(null=True, blank=True)
     telegram = models.TextField(null=True, blank=True)
+    telegram_id = models.TextField(null=True, blank=True)
     authcode = models.TextField(null=True, blank=True)
     active = models.BooleanField(null=False, default=True)
     role = models.CharField(max_length=2, choices=(
