@@ -58,16 +58,18 @@ def get_iscritto_by_codice(search_string: str, show_only_active: bool = False) -
 
 
 def get_iscritto_by_telegram(t_user: str) -> QuerySet:
+    printdebug(t_user)
     return Iscritti.objects.filter(
-        Q(telegram_id__iexact=str(t_user))
+        Q(telegram_id__iexact=str(t_user)) |
+        Q(telegram__iexact=str(t_user))
     )
 
 
 def get_enabled() -> QuerySet:
     return Iscritti.objects.filter(
-        Q(telegram__isnull=False)
+        Q(telegram_id__isnull=False)
     ).exclude(
-        Q(telegram__iexact='') &
+        Q(telegram_id__iexact='') &
         Q(active=False)
     )
 
@@ -134,6 +136,10 @@ def print_mail_field(email:str) -> str:
         return ' \- '
     else:
         return f"{clean_message(email)}"
+
+
+def get_telegram_link(iscritto: Iscritti):
+    return f"[@{iscritto.telegram}](tg://user?id={iscritto.telegram_id[2:]})"
 
 
 class CocaBotView(View):
@@ -383,7 +389,7 @@ class CocaBotView(View):
                         # print(iscritto_text)
                         if self.check_admin(t_user, t_chat['id'], False):
                             iscritto_text += f'*Ruolo:* {clean_message(iscritto.get_role_display())}\n'
-                            iscritto_text += f'*Telegram:* {"" if iscritto.telegram is None else "@"}{parse_none_string(iscritto.telegram)}\n'
+                            iscritto_text += f'*Telegram:* {"" if iscritto.telegram_id is None else get_telegram_link(iscritto)}\n'
                             iscritto_text += f'*AuthCode:* {parse_none_string(iscritto.authcode)}\n'
                             iscritto_text += f'*Attivo:* {"Si" if iscritto.active else "No"}\n'
 
@@ -416,9 +422,9 @@ class CocaBotView(View):
     def abilitati(self, s: list, t_user: str, t_chat: dict) -> JsonResponse:
         if self.check_admin(t_user, t_chat["id"]):
             iscritti_set = get_enabled()
-            text=''
+            text = ''
             for iscritto in iscritti_set:
-                text += f"@{iscritto.telegram}: {clean_message(iscritto.nome)} {clean_message(iscritto.cognome)}\n"
+                text += f"[@{iscritto.telegram}](tg://user?id={iscritto.telegram_id[2:]}): {clean_message(iscritto.nome)} {clean_message(iscritto.cognome)}\n"
 
             if iscritti_set.count() < 1:
                 text = 'Non trovo iscritti abilitati'
@@ -708,7 +714,7 @@ class CocaBotView(View):
             return False
 
         try:
-            user: Iscritti = Iscritti.objects.get(telegram=t_user)
+            user: Iscritti = Iscritti.objects.get(telegram_id__iexact=t_user)
         except Iscritti.DoesNotExist:
             # print("Ko")
             if send_message_back:
