@@ -172,10 +172,10 @@ class CocaBotView(View):
                              f'Se sei un capo di questa Comunità Capi usa il codice ricevuto per email per registrarti\!', t_chat["id"])
                 return JsonResponse({"ok": "POST request processed"})
 
-            if s[0] == 'info':
+            if (s[0] == 'info') | (s[0] == 'socio'):
                 return self.get_info(s, t_user, t_chat)
 
-            if s[0] == 'codicesocio':
+            if (s[0] == 'codicesocio') | (s[0] == 'codice'):
                 return self.get_codice(s, t_user, t_chat)
 
             if s[0] == 'generacodice':
@@ -276,8 +276,11 @@ class CocaBotView(View):
     def get_codice(self, s, t_user, t_chat):
         if self.check_user(t_user, t_chat["id"]):
             if len(s) < 2:
-                send_message("Non mi hai dato niente da cercare!", t_chat["id"])
-                return JsonResponse({"ok": "POST request processed"})
+                # send_message("Non mi hai dato niente da cercare!", t_chat["id"])
+                # return JsonResponse({"ok": "POST request processed"})
+                search_string = '*'
+            else:
+                search_string = s[1]
 
             if len(s) >= 3:
                 show_only_active = (s[2] == 'attivi')
@@ -286,7 +289,7 @@ class CocaBotView(View):
 
             printdebug(f"Show only active: {show_only_active}")
 
-            iscritti_set = get_iscritti(s[1], show_only_active)
+            iscritti_set = get_iscritti(search_string, show_only_active)
 
             message_text = ''
             counter = 0
