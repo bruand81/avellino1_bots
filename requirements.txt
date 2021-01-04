@@ -24,3 +24,4 @@ urllib3==1.26.2
 xlrd==2.0.1
 gunicorn
 django-heroku
+whitenoise==5.2.0
