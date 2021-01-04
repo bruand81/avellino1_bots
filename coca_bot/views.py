@@ -308,12 +308,12 @@ class CocaBotView(View):
                                     f'*Branca:* {clean_message(iscritto.branca)}\n'
                                     # f'--                                       --\n'
                     iscritto_text += f'\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\n'
-                    message_text += iscritto_text
+                    send_message(iscritto_text, t_chat["id"])
 
             if message_text == '':
                 message_text = 'Nessun iscritto con i criteri di ricerca specificati'
             else:
-                message_text += f"*Soci trovati:* {counter}"
+                message_text+= f"*Soci trovati:* {counter}"
                 send_message(message_text, t_chat["id"])
                 return JsonResponse({"ok": "POST request processed"})
 
