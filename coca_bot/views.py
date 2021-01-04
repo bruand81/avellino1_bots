@@ -318,7 +318,7 @@ class CocaBotView(View):
                 send_message(message_text, t_chat["id"])
                 return JsonResponse({"ok": "POST request processed"})
 
-            send_message(message_text, t_chat["id"])
+            # send_message(message_text, t_chat["id"])
         return JsonResponse({"ok": "POST request processed"})
 
     def get_info(self, s, t_user, t_chat):
