@@ -132,4 +132,4 @@ EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "avellino1@campania.agesci.it")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "error_token")
 EMAIL_FROM = os.getenv("EMAIL_FROM", "avellino1@campania.agesci.it")
 
-STATIC_ROOT = os.path.join(BASE_DIR, "..", "static_files")
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
