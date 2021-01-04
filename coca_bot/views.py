@@ -224,10 +224,10 @@ class CocaBotView(View):
                 return self.help(t_chat['id'])
 
             if s[0] == 'registrami':
-                return self.registrami(s, t_user, t_chat)
+                return self.registrami(s, t_user, t_chat, t_user_name)
 
             if s[0] == 'autorizzami':
-                return self.registrami(s, t_user, t_chat)
+                return self.registrami(s, t_user, t_chat, t_user_name)
 
             if s[0] == 'attiva':
                 return self.imposta_status(s, t_user, t_chat, True)
@@ -284,7 +284,7 @@ class CocaBotView(View):
             if not nuovo_iscritto.active:
                 send_message(f'L\'utente {clean_message(nuovo_iscritto.nome)} {clean_message(nuovo_iscritto.cognome)} non è attivo')
             nuovo_iscritto.telegram_id = t_user
-            nuovo_iscritto.telegram = t_user
+            nuovo_iscritto.telegram = t_user_name
             nuovo_iscritto.save(force_update=True)
             send_message(f'Complimenti, questo nich è stato registrato per {clean_message(nuovo_iscritto.nome)} {clean_message(nuovo_iscritto.cognome)}',
                               t_chat["id"])
