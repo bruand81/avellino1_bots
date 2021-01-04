@@ -306,14 +306,15 @@ class CocaBotView(View):
                     iscritto_text = f'*Codice Socio:* {clean_message(str(iscritto.codice_socio))}\n' \
                                     f'*Nome:* {clean_message(iscritto.nome)} {clean_message(iscritto.cognome)}\n' \
                                     f'*Branca:* {clean_message(iscritto.branca)}\n'
-                                    # f'--                                       --\n'
                     iscritto_text += f'\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\n'
                     send_message(iscritto_text, t_chat["id"])
 
-            if message_text == '':
+            if counter < 1:
                 message_text = 'Nessun iscritto con i criteri di ricerca specificati'
+                send_message(message_text, t_chat["id"])
+                return JsonResponse({"ok": "POST request processed"})
             else:
-                message_text+= f"*Soci trovati:* {counter}"
+                message_text = f"*Soci trovati:* {counter}"
                 send_message(message_text, t_chat["id"])
                 return JsonResponse({"ok": "POST request processed"})
 
