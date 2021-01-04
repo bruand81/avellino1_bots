@@ -59,7 +59,7 @@ def get_iscritto_by_codice(search_string: str, show_only_active: bool = False) -
 
 def get_iscritto_by_telegram(t_user: str) -> QuerySet:
     return Iscritti.objects.filter(
-        Q(telegram__iexact=t_user)
+        Q(telegram_id__iexact=t_user)
     )
 
 
@@ -148,10 +148,18 @@ class CocaBotView(View):
         print(t_data)
         t_message = t_data["message"]
         t_chat = t_message["chat"]
-        if 'username' in t_message['from'].keys():
-            t_user = t_message['from']['username']
+
+        if 'id' in t_message['from'].keys():
+            t_user = t_message['from']['id']
         else:
             t_user = None
+
+        if 'username' in t_message['from'].keys():
+            t_user_name = t_message['from']['username']
+        else:
+            t_user_name = f"user_{t_user}"
+
+
         # print(t_message)
 
         try:
@@ -161,7 +169,7 @@ class CocaBotView(View):
         printdebug(text)
 
         applog = AppLogs(
-            username=t_user,
+            username=t_user_name,
             command=text
         )
 
@@ -250,7 +258,7 @@ class CocaBotView(View):
             return JsonResponse({"ok": "POST request processed"})
         return JsonResponse({"ok": "POST request processed"})
 
-    def registrami(self, s: list, t_user: str, t_chat: dict) -> JsonResponse:
+    def registrami(self, s: list, t_user: str, t_chat: dict, t_user_name: str) -> JsonResponse:
         if len(s) < 2:
             send_message("Non mi hai dato il codice di autorizzazione. Richiedilo ai tuoi capigruppo\!", t_chat["id"])
             return JsonResponse({"ok": "POST request processed"})
@@ -269,6 +277,7 @@ class CocaBotView(View):
         if nuovo_iscritto.telegram is None:
             if not nuovo_iscritto.active:
                 send_message(f'L\'utente {clean_message(nuovo_iscritto.nome)} {clean_message(nuovo_iscritto.cognome)} non è attivo')
+            nuovo_iscritto.telegram_id = t_user
             nuovo_iscritto.telegram = t_user
             nuovo_iscritto.save(force_update=True)
             send_message(f'Complimenti, questo nich è stato registrato per {clean_message(nuovo_iscritto.nome)} {clean_message(nuovo_iscritto.cognome)}',
