@@ -59,7 +59,7 @@ def get_iscritto_by_codice(search_string: str, show_only_active: bool = False) -
 
 def get_iscritto_by_telegram(t_user: str) -> QuerySet:
     return Iscritti.objects.filter(
-        Q(telegram_id__iexact=t_user)
+        Q(telegram_id__iexact=str(t_user))
     )
 
 
