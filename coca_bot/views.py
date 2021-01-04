@@ -140,7 +140,7 @@ class CocaBotView(View):
     def post(self, request, *args, **kwargs):
         if FORCEANSWER:
             print("Answer forced")
-            send_message(f"Si è verificato un errore sul server\! Riprova più tardi")
+            send_message(clean_message(f"Si è verificato un errore sul server! Riprova più tardi"))
             return JsonResponse({"ok": "POST request processed"})
         t_data = json.loads(request.body)
         print(t_data)
