@@ -158,7 +158,7 @@ class CocaBotView(View):
         else:
             t_user_name = f"user_{t_user}"
 
-        print(f"{t_user} - {t_user_name}")
+        print(f"{type(t_user)} - {t_user_name}")
 
         # print(t_message)
 
